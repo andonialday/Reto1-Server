@@ -11,6 +11,9 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import reto1libraries.exception.ClientServerConnectionException;
+import reto1libraries.exception.DBConnectionException;
+import reto1server.dataaccess.Pool;
+import reto1server.logic.CloseThread;
 import reto1server.logic.MyThread;
 
 /**
@@ -30,14 +33,15 @@ public class ServerApplication {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws ClientServerConnectionException {
-
+        LOGGER.info("SERVER RUNNING . . . Write EXIT to close");
         ServerSocket server = null;
 
         try {
 
             server = new ServerSocket(PORT);
             Socket client = null;
-
+            CloseThread cl = new CloseThread();
+            cl.start();
             while (true) {
 
                 if (i < CANT) {
@@ -47,7 +51,7 @@ public class ServerApplication {
 
                     i++;
                 } else {
-                    //LOGGER.info("Excesive connections detected");   
+                     
                     Logger.getLogger(ServerApplication.class.getName()).log(Level.SEVERE, null, "Excesive connections detected");
                 }
             }
@@ -61,6 +65,18 @@ public class ServerApplication {
      */
     public static synchronized void closeSc() {
         i--;
+    }
+     /**
+     * Method to finalize the server application by command line
+     */
+    public static void finish() {
+
+        try {
+            Pool.closeConnections();
+        } catch (DBConnectionException ex) {
+            LOGGER.info("Error trying to close connections");
+        }
+        System.exit(0);
     }
 
 }
