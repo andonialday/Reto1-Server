@@ -27,15 +27,7 @@ import reto1libraries.exception.*;
     private final String user = configFile.getString("USER");
     private final String pass = configFile.getString("PASSWORD");
     private final Integer cant = Integer.valueOf(configFile.getString("CANT"));
-    
-    /**
-     * Constructor that picks up from a configuration file
-     * the number of connections it can handle. 
-     */
-    public Pool()  {
-       
-    }
-
+   
     /**
      * Getter for the cons ArrayList that contains the Connections
      * @return the cons ArrayList
