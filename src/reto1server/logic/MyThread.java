@@ -23,7 +23,7 @@ import reto1libraries.object.User;
 import reto1server.application.ServerApplication;
 
 /**
- * This Class Extends From Thread and Connect Server Socket with Client Socket
+ * This Class Extends From Thread and Connect Server Socket with Client Socket.
  * @author Jaime Sansebastian , Enaitz Izagirre
  */
 public class MyThread extends Thread {
@@ -34,7 +34,7 @@ public class MyThread extends Thread {
     private static final Logger LOGGER = Logger.getLogger("package.class");
 
     /**
-     * Assign the client socket to the one of this class
+     * Assign the client socket to the one of this class.
      * @param client Grab the client socket
      */
     public MyThread(Socket client) {
@@ -42,10 +42,10 @@ public class MyThread extends Thread {
     }
 
     /**
-     * Initialize a new Thread to attend the request 
-     * Depending on the method or the state it works differently
-     * When it finishes with the request, it proceeds to close the socket
-     * Finally the thread is closed
+     * Initialize a new Thread to attend the request. 
+     * Depending on the method or the state it works differently.
+     * When it finishes with the request, it proceeds to close the socket.
+     * Finally the thread is closed.
      */
     @Override
     public void run() {
