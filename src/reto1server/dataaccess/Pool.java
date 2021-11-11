@@ -37,8 +37,8 @@ import reto1libraries.exception.*;
     }
 
     /**
-     * 
-     * @return 
+     * Getter for the cons ArrayList that contains the Connections
+     * @return the cons ArrayList
      */
     public ArrayList<Connection> getCons() {
         return cons;

@@ -20,8 +20,6 @@ import reto1server.application.ServerApplication;
 public class CloseThread extends Thread {
 
     private static final Logger LOGGER = Logger.getLogger("package.class");
-
-    ;
     
     @Override
     public void run() {
