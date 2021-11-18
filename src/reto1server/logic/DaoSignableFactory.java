@@ -18,7 +18,7 @@ public class DaoSignableFactory {
      * This method is used for the creation of the Dao 
      * @return It returns a dato from the Dao Implementation
      */
-    public Signable getDAO (){ 
+    public static Signable getDAO (){ 
 
         Signable dao = new DaoSignableImplementation();
         
