@@ -8,13 +8,13 @@ package reto1server.application;
 import java.io.IOException;
 import java.net.*;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import reto1libraries.exception.ClientServerConnectionException;
 import reto1libraries.exception.DBConnectionException;
 import reto1server.dataaccess.Pool;
 import reto1server.logic.CloseThread;
 import reto1server.logic.MyThread;
+import reto1server.logic.ThreadBusyServer;
 
 /**
  * Client Main class to Launch Server App
@@ -43,16 +43,15 @@ public class ServerApplication {
             CloseThread cl = new CloseThread();
             cl.start();
             while (true) {
-
-                if (i < CANT) {
                     client = server.accept();
+                if (i < CANT) {
                     MyThread hilo = new MyThread(client);
                     hilo.start();
-
                     i++;
                 } else {
-                     
-                    Logger.getLogger(ServerApplication.class.getName()).log(Level.SEVERE, null, "Excesive connections detected");
+                    ThreadBusyServer deny = new ThreadBusyServer(client);
+                    deny.start();
+                    LOGGER.info("Excesive connections detected");
                 }
             }
         } catch (IOException e) {

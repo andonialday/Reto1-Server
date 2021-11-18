@@ -24,6 +24,7 @@ import reto1server.application.ServerApplication;
 
 /**
  * This Class Extends From Thread and Connect Server Socket with Client Socket.
+ *
  * @author Jaime Sansebastian , Enaitz Izagirre
  */
 public class MyThread extends Thread {
@@ -35,6 +36,7 @@ public class MyThread extends Thread {
 
     /**
      * Assign the client socket to the one of this class.
+     *
      * @param client Grab the client socket
      */
     public MyThread(Socket client) {
@@ -42,23 +44,21 @@ public class MyThread extends Thread {
     }
 
     /**
-     * Initialize a new Thread to attend the request. 
-     * Depending on the method or the state it works differently.
-     * When it finishes with the request, it proceeds to close the socket.
-     * Finally the thread is closed.
+     * Initialize a new Thread to attend the request. Depending on the method or
+     * the state it works differently. When it finishes with the request, it
+     * proceeds to close the socket. Finally the thread is closed.
      */
     @Override
     public void run() {
 
         LOGGER.info("Initiating new Thread for incoming request");
 
-        this.factoria = new DaoSignableFactory();
-        this.dao = factoria.getDAO();
+        this.dao = DaoSignableFactory.getDAO();
         ObjectInputStream ois = null;
         ObjectOutputStream oos = null;
         Encapsulation enc = null;
         User user = null;
-
+        User usr = null;
         try {
             ois = new ObjectInputStream(clientSocket.getInputStream());
             oos = new ObjectOutputStream(clientSocket.getOutputStream());
@@ -69,24 +69,27 @@ public class MyThread extends Thread {
 
             if (enc.getMethod() == Method.SIGNIN) {
                 LOGGER.info("Requesting SignIn");
-                user = (User) dao.signIn(enc.getUser());
+                usr = (User) dao.signIn(enc.getUser());
             } else {
                 LOGGER.info("Requesting SignUp");
-                user = (User) dao.signUp(enc.getUser());
+                usr = (User) dao.signUp(enc.getUser());
             }
-            if (user == null) {
+            if (usr.getLogin() == null) {
                 enc.setStatus(Status.FAIL);
             } else {
                 enc.setStatus(Status.CORRECT);
             }
         } catch (ClassNotFoundException | IOException | ClientServerConnectionException ex) {
             Logger.getLogger(MyThread.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (DBConnectionException | LoginOnUseException | CredentialErrorException ex) {
+        } catch (DBConnectionException ex) {
             enc.setStatus(Status.ERROR);
+        } catch (LoginOnUseException | CredentialErrorException ex) {
+            enc.setStatus(Status.FAIL);
         }
-
         try {
-            enc.setUser(user);
+            // Respuesta al usuario
+            LOGGER.info("Sending answer tothe client");
+            enc.setUser(usr);
             oos.writeObject(enc);
             ServerApplication.closeSc();
         } catch (IOException ex) {
@@ -101,7 +104,6 @@ public class MyThread extends Thread {
                 Logger.getLogger(MyThread.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-
         LOGGER.info("Finishing Thread");
         this.interrupt();
     }
